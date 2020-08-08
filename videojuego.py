@@ -2,13 +2,18 @@ import pygame
 import sys
 
 class Bolita(pygame.sprite.Sprite):
-    # Los objetos que se mueven en pygame son sprite
+    # Los objetos que se ven en la pantalla en pygame, son sprites
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         # Cargar imagen
         self.image = pygame.image.load('bolita.png')
         # Cargar el rectángulo de la bolita
         self.rect = self.image.get_rect()
+        # (0,0) : Esquina superior izquierda
+        # (ancho, alto) : Esquina inferior derecha
+        # Se le da una posición inicial central:
+        self.rect.centerx = ancho/2
+        self.rect.centery = alto/2
 
 ancho = 640
 alto = 480
@@ -26,6 +31,7 @@ while True:
         if evento.type == pygame.QUIT:
             sys.exit()
 
-    # Dibujar bolita en pantalla
+    # Dibujar bolita en pantalla: la función blit dibuja una superficie sobre
+    # otra.
     pantalla.blit(bolita.image, bolita.rect)
     pygame.display.flip()
