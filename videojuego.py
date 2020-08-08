@@ -5,8 +5,9 @@ ancho = 640
 alto = 480
 
 # Inicializando pantalla
-
 pantalla = pygame.display.set_mode((ancho, alto))
+# Adicionando título de pantalla
+pygame.display.set_caption('Juego de Ladrillos')
 
 while True:
     # Se revisan los eventos...
