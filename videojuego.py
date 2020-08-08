@@ -8,8 +8,8 @@ alto = 480
 color_azul = (0, 0, 64)
 color_blanco = (255, 255, 255)
 
-# pygame.init()  # Es necesario para poder usar las fuentes en un juego
-pygame.font.init()
+pygame.init()  # Es necesario para poder usar las fuentes en un juego
+#  pygame.font.init()
 
 
 class Bolita(pygame.sprite.Sprite):
@@ -27,7 +27,7 @@ class Bolita(pygame.sprite.Sprite):
         self.rect.centerx = ancho/2
         self.rect.centery = alto/2
         # Establecer velocidad inicial
-        self.speed = [3, 3]
+        self.speed = [3, -3]
 
     def update(self):
         # Evitar que se salga por arriba
@@ -55,10 +55,10 @@ class Raqueta(pygame.sprite.Sprite):
     def update(self, evento):
         # Buscar si se presionó flecha izquierda
         if evento.key == pygame.K_LEFT and self.rect.left > 0:
-            self.speed = [-5, 0]
+            self.speed = [-6, 0]
         # Si se presionó flecha derecha
         elif evento.key == pygame.K_RIGHT and self.rect.right < ancho:
-            self.speed = [5, 0]
+            self.speed = [6, 0]
         else:
             self.speed = [0, 0]
         # Mover según posición actual y velocidad
@@ -105,7 +105,7 @@ def juego_terminado():
     pantalla.blit(texto, texto_rect)
     pygame.display.flip()
     # Pausa por tres segundos antes de salir
-    time.sleep(3)
+    time.sleep(5)
     sys.exit()
 
 
@@ -114,6 +114,15 @@ def mostrar_puntuacion():
     texto = fuente.render(str(puntuacion).zfill(5), True, color_blanco)
     texto_rect = texto.get_rect()
     texto_rect.topleft = [0, 0]
+    pantalla.blit(texto, texto_rect)
+
+
+def mostrar_vidas():
+    fuente = pygame.font.SysFont('Consolas', 20)
+    cadena = "Vidas: " + str(vidas).zfill(2)
+    texto = fuente.render(cadena, True, color_blanco)
+    texto_rect = texto.get_rect()
+    texto_rect.topright = [ancho, 0]
     pantalla.blit(texto, texto_rect)
 
 
@@ -130,6 +139,7 @@ bolita = Bolita()
 jugador = Raqueta()
 muro = Muro(50)
 puntuacion = 0
+vidas = 3
 
 while True:
     # Establecer los FPS permite determinar la máxima velocidad a la que va
@@ -168,13 +178,14 @@ while True:
 
     # Revisar si la bolita sale de la pantalla
     if bolita.rect.top > alto:
-        juego_terminado()
+        vidas -= 1
+        bolita.rect.top -= alto/2
 
     # Se rellena el fondo
     pantalla.fill(color_azul)
-    # Se muestra la puntuación
+    # Se muestra la puntuación y las vidas
     mostrar_puntuacion()
-
+    mostrar_vidas()
     # Dibujar bolita en pantalla
     # La función blit dibuja una superficie sobre otra.
     pantalla.blit(bolita.image, bolita.rect)
@@ -184,3 +195,6 @@ while True:
     muro.draw(pantalla)
     # Actualizar los elementos en pantalla
     pygame.display.flip()
+
+    if vidas <= 0:
+        juego_terminado()
