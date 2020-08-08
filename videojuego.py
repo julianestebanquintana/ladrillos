@@ -55,6 +55,28 @@ class Raqueta(pygame.sprite.Sprite):
         self.rect.move_ip(self.speed)
 
 
+class Ladrillo(pygame.sprite.Sprite):
+    def __init__(self, posicion):
+        pygame.sprite.Sprite.__init__(self)
+        # Cargar imagen
+        self.image = pygame.image.load('ladrillo.png')
+        # Cargar el rectángulo del ladrillo
+        self.rect = self.image.get_rect()
+        # Se le da una posición inicial, provista externamente
+        self.rect.topleft = posicion
+
+
+class Muro(pygame.sprite.Group):
+    def __init__(self):
+        pygame.sprite.Group.__init__(self)
+
+        ladrillo1 = Ladrillo((0, 0))
+        ladrillo2 = Ladrillo((100, 100))
+
+        self.add(ladrillo1)
+        self.add(ladrillo2)
+
+
 ancho = 640
 alto = 480
 color_azul = (0, 0, 64)
@@ -70,6 +92,7 @@ pygame.key.set_repeat(30)
 
 bolita = Bolita()
 jugador = Raqueta()
+muro = Muro()
 
 while True:
     # Establecer los FPS permite determinar la máxima velocidad a la que va
@@ -94,4 +117,7 @@ while True:
     pantalla.blit(bolita.image, bolita.rect)
     # Se dibuja la raqueta del jugador
     pantalla.blit(jugador.image, jugador.rect)
+    # Dibujar el muro
+    muro.draw(pantalla)
+    # Actualizar los elementos en pantalla
     pygame.display.flip()
