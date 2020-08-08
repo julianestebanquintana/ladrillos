@@ -67,14 +67,22 @@ class Ladrillo(pygame.sprite.Sprite):
 
 
 class Muro(pygame.sprite.Group):
-    def __init__(self):
+    # Existe un contenedor de sprites que se llama Group
+    # Group permite agregar elementos con el método .add
+    # Group permite dibujar el grupo con el método .draw
+    def __init__(self, cantidad_ladrillos):
         pygame.sprite.Group.__init__(self)
 
-        ladrillo1 = Ladrillo((0, 0))
-        ladrillo2 = Ladrillo((100, 100))
+        pos_x = 0
+        pos_y = 20
+        for i in range(cantidad_ladrillos):
+            ladrillo = Ladrillo((pos_x, pos_y))
+            self.add(ladrillo)
 
-        self.add(ladrillo1)
-        self.add(ladrillo2)
+            pos_x += ladrillo.rect.width
+            if pos_x >= ancho:
+                pos_x = 0
+                pos_y += ladrillo.rect.height
 
 
 ancho = 640
@@ -92,7 +100,7 @@ pygame.key.set_repeat(30)
 
 bolita = Bolita()
 jugador = Raqueta()
-muro = Muro()
+muro = Muro(50)
 
 while True:
     # Establecer los FPS permite determinar la máxima velocidad a la que va
@@ -112,8 +120,8 @@ while True:
     # Se rellena el fondo
     pantalla.fill(color_azul)
 
-    # Dibujar bolita en pantalla: la función blit dibuja una superficie sobre
-    # otra.
+    # Dibujar bolita en pantalla
+    # La función blit dibuja una superficie sobre otra.
     pantalla.blit(bolita.image, bolita.rect)
     # Se dibuja la raqueta del jugador
     pantalla.blit(jugador.image, jugador.rect)
