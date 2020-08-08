@@ -30,6 +30,19 @@ class Bolita(pygame.sprite.Sprite):
         self.rect.move_ip(self.speed)
 
 
+class Raqueta(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        # Cargar imagen
+        self.image = pygame.image.load('paleta.png')
+        # Cargar el rectángulo de la raqueta
+        self.rect = self.image.get_rect()
+        # Se le da una posición inicial centrada en pantalla en X.
+        self.rect.midbottom = (ancho/2, alto - 20)
+        # Establecer velocidad inicial
+        self.speed = [0, 0]
+
+
 ancho = 640
 alto = 480
 color_azul = (0, 0, 64)
@@ -42,6 +55,7 @@ pygame.display.set_caption('Juego de Ladrillos')
 reloj = pygame.time.Clock()
 
 bolita = Bolita()
+jugador = Raqueta()
 
 while True:
     # Establecer los FPS permite determinar la máxima velocidad a la que va
@@ -62,4 +76,6 @@ while True:
     # Dibujar bolita en pantalla: la función blit dibuja una superficie sobre
     # otra.
     pantalla.blit(bolita.image, bolita.rect)
+    # Se dibuja la raqueta
+    pantalla.blit(jugador.image, jugador.rect)
     pygame.display.flip()
