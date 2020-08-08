@@ -117,6 +117,25 @@ while True:
     # Actualizar posición de la bolita
     bolita.update()
 
+    # Colisión bolita - jugador
+    if pygame.sprite.collide_rect(bolita, jugador):
+        bolita.speed[1] = -bolita.speed[1]
+
+    # Colisión bolita - muro
+    # pygame.sprite.spritecollide(bolita, muro, True)
+    # Pide un booleano: ¿Los sprites tocados deben ser destruídos?
+    # Pero esta solución elimina los ladrillos, pero no cambia la dirección 
+    # de la bolita. A continuación, otra solución:
+    lista = pygame.sprite.spritecollide(bolita, muro, False)
+    if lista:
+        ladrillo = lista[0]
+        cx = bolita.rect.centerx
+        if cx < ladrillo.rect.left or cx > ladrillo.rect.right:
+            bolita.speed[0] = -bolita.speed[0]
+        else:
+            bolita.speed[1] = -bolita.speed[1]
+        muro.remove(ladrillo)
+
     # Se rellena el fondo
     pantalla.fill(color_azul)
 
