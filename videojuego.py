@@ -1,5 +1,15 @@
-import pygame
 import sys
+import time
+import pygame
+
+
+ancho = 640
+alto = 480
+color_azul = (0, 0, 64)
+color_blanco = (255, 255, 255)
+
+# pygame.init()  # Es necesario para poder usar las fuentes en un juego
+pygame.font.init()
 
 
 class Bolita(pygame.sprite.Sprite):
@@ -20,8 +30,8 @@ class Bolita(pygame.sprite.Sprite):
         self.speed = [3, 3]
 
     def update(self):
-        # Evitar que se salga por arriba o abajo
-        if self.rect.bottom >= alto or self.rect.top <= 0:
+        # Evitar que se salga por arriba
+        if self.rect.top <= 0:
             self.speed[1] = -self.speed[1]
         # Evitar que se salga por los lados
         if self.rect.right >= ancho or self.rect.left <= 0:
@@ -85,9 +95,27 @@ class Muro(pygame.sprite.Group):
                 pos_y += ladrillo.rect.height
 
 
-ancho = 640
-alto = 480
-color_azul = (0, 0, 64)
+# Función llamada tras dejar ir la bolita
+def juego_terminado():
+    #  all_fonts = pygame.font.get_fonts()
+    fuente = pygame.font.SysFont('Consolas', 72)
+    texto = fuente.render('Game over', True, color_blanco)
+    texto_rect = texto.get_rect()
+    texto_rect.center = [ancho/2, alto/2]
+    pantalla.blit(texto, texto_rect)
+    pygame.display.flip()
+    # Pausa por tres segundos antes de salir
+    time.sleep(3)
+    sys.exit()
+
+
+def mostrar_puntuacion():
+    fuente = pygame.font.SysFont('Consolas', 20)
+    texto = fuente.render(str(puntuacion).zfill(5), True, color_blanco)
+    texto_rect = texto.get_rect()
+    texto_rect.topleft = [0, 0]
+    pantalla.blit(texto, texto_rect)
+
 
 # Inicializando pantalla
 pantalla = pygame.display.set_mode((ancho, alto))
@@ -101,6 +129,7 @@ pygame.key.set_repeat(30)
 bolita = Bolita()
 jugador = Raqueta()
 muro = Muro(50)
+puntuacion = 0
 
 while True:
     # Establecer los FPS permite determinar la máxima velocidad a la que va
@@ -122,9 +151,9 @@ while True:
         bolita.speed[1] = -bolita.speed[1]
 
     # Colisión bolita - muro
-    # pygame.sprite.spritecollide(bolita, muro, True)
+    #  pygame.sprite.spritecollide(bolita, muro, True)
     # Pide un booleano: ¿Los sprites tocados deben ser destruídos?
-    # Pero esta solución elimina los ladrillos, pero no cambia la dirección 
+    # Pero esta solución elimina los ladrillos, pero no cambia la dirección
     # de la bolita. A continuación, otra solución:
     lista = pygame.sprite.spritecollide(bolita, muro, False)
     if lista:
@@ -135,9 +164,16 @@ while True:
         else:
             bolita.speed[1] = -bolita.speed[1]
         muro.remove(ladrillo)
+        puntuacion += 10
+
+    # Revisar si la bolita sale de la pantalla
+    if bolita.rect.top > alto:
+        juego_terminado()
 
     # Se rellena el fondo
     pantalla.fill(color_azul)
+    # Se muestra la puntuación
+    mostrar_puntuacion()
 
     # Dibujar bolita en pantalla
     # La función blit dibuja una superficie sobre otra.
