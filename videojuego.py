@@ -42,6 +42,18 @@ class Raqueta(pygame.sprite.Sprite):
         # Establecer velocidad inicial
         self.speed = [0, 0]
 
+    def update(self, evento):
+        # Buscar si se presionó flecha izquierda
+        if evento.key == pygame.K_LEFT and self.rect.left > 0:
+            self.speed = [-5, 0]
+        # Si se presionó flecha derecha
+        elif evento.key == pygame.K_RIGHT and self.rect.right < ancho:
+            self.speed = [5, 0]
+        else:
+            self.speed = [0, 0]
+        # Mover según posición actual y velocidad
+        self.rect.move_ip(self.speed)
+
 
 ancho = 640
 alto = 480
@@ -53,6 +65,8 @@ pantalla = pygame.display.set_mode((ancho, alto))
 pygame.display.set_caption('Juego de Ladrillos')
 # Para monitorear el tiempo, pygame ofrece el objeto .Clock
 reloj = pygame.time.Clock()
+# Ajustar repetición de evento de tecla presionada
+pygame.key.set_repeat(30)
 
 bolita = Bolita()
 jugador = Raqueta()
@@ -66,6 +80,8 @@ while True:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
             sys.exit()
+        elif evento.type == pygame.KEYDOWN:
+            jugador.update(evento)
 
     # Actualizar posición de la bolita
     bolita.update()
@@ -76,6 +92,6 @@ while True:
     # Dibujar bolita en pantalla: la función blit dibuja una superficie sobre
     # otra.
     pantalla.blit(bolita.image, bolita.rect)
-    # Se dibuja la raqueta
+    # Se dibuja la raqueta del jugador
     pantalla.blit(jugador.image, jugador.rect)
     pygame.display.flip()
